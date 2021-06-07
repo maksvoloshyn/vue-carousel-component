@@ -1,7 +1,10 @@
 <template>
     <h1 class="text-5xl">Vue Carousel</h1>
     <div class="border my-10">
-        <carousel-component :slides="slides">
+        <carousel-component
+            :slides="slides"
+            v-model:current-index="currentIndex"
+        >
             <template #slide="{context}">
                 <div
                     class="h-96 flex flex-col justify-center"
@@ -12,6 +15,16 @@
                 </div>
             </template>
         </carousel-component>
+    </div>
+    <div>
+        <select v-model="currentIndex">
+            <option
+                v-for="(slide, index) in slides"
+                :key="index"
+                :value="index"
+                :label="slide.title"
+            ></option>
+        </select>
     </div>
 </template>
 
@@ -47,6 +60,7 @@
         data() {
             return {
                 slides: defaultSlides.map(slide => ({...slide})),
+                currentIndex: 0,
             };
         },
     });

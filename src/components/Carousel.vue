@@ -4,6 +4,7 @@
             <div
                 v-for="(slide, index) in slides"
                 :key="index"
+                :ref="setSlideRef"
                 class="r-carousel__slide"
             >
                 <slot name="slide" v-bind="{context: slide}"></slot>
@@ -13,16 +14,39 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent} from 'vue';
+    import {defineComponent, onBeforeUpdate, watch} from 'vue';
+    import useRefsArray from '../use/useRefsArray';
 
     export default defineComponent({
         name: 'Carousel',
+
+        emits: ['update:currentIndex'],
 
         props: {
             slides: {
                 type: Array,
                 default: () => [],
             },
+
+            currentIndex: {
+                type: Number,
+                default: 0,
+            },
+        },
+
+        setup(props) {
+            const {setSlideRef, slidesRefs} = useRefsArray();
+
+            watch(
+                () => props.currentIndex,
+                value => {
+                    slidesRefs[value]?.scrollIntoView({behavior: 'smooth'});
+                }
+            );
+
+            return {
+                setSlideRef,
+            };
         },
     });
 </script>
